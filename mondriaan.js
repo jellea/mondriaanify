@@ -1,27 +1,27 @@
-var fs = require('fs')
-var sys = require('sys')
-var http = require('http');
-var exec = require('child_process').exec;
-function puts(error, stdout, stderr) { sys.puts(stdout) }
+var nsh      =  require('node-syntaxhighlighter')
+  , fs       =  require('fs')
+  , exec     =  require('child_process').exec
+  , code     =  fs.readFileSync(__filename).toString()
+  , style    =  'default'
+  , htmlFile =  './mondriaan.html'
+  ;
 
-var output = ""
+var language        =  nsh.getLanguage('js')
+  , highlightedCode =  nsh.highlight(refactor(code), language);
 
-fs.readFile('mondriaan.js','utf-8', function (err,data){
+
+function refactor (data){
   data = data.
     replace(/\n/g,'').
-    replace(/ /g,'').
-    replace(/</g, '&lt;').
-    replace(/'/g, '&#039;').
-    replace(/"/g, '&quot;')
-
+    replace(/[ \t]{2,}/g,' ')
   rowlength = 1;
   rowloc = 1;
 
-  for (i=0;i<data.length;i++) {
-      output += data[i];
+  output = "";
 
+  for (i=0;i<data.length;i++) {
       if (rowloc == rowlength) {
-          output += '</br>\n';
+          output += '\n';
           rowloc = 0;
           if (i > data.length/2){
               rowlength -= 4;
@@ -29,20 +29,33 @@ fs.readFile('mondriaan.js','utf-8', function (err,data){
               rowlength += 4;
           }
           for (x=0;x<40-rowlength/2;x++){
-              output += '&nbsp;';
+              output += ' ';
           }
       }
+      output += data[i];
+
       rowloc += 1;
   }
-  sys.print(output);
+  return (output);
+};
 
-  var server = http.createServer(function(req, res) {
-    res.writeHead(200);
-    res.end("<html><head><style>body{font-family:monospace;}</style></head><body>"+output+"</body></html>");
-  });
-  server.listen(8666);
-  exec("open http://localhost:8666", puts);
-});
+var  html = [
+        '<!DOCTYPE HTML>'
+      , '<html>'
+      , '<head>'
+      , '   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>'
+      , '   <title>Page of Self</title>'
+      , ' <link rel="stylesheet" href="./' + style + '.css" type="text/css" media="screen" charset="utf-8" />'
+      , ' <style>body{letter-spacing: -1px;}</style>'
+      , '</head>'
+      , '<body>'
+      , highlightedCode
+      , '</body>'
+      , '</html'
+      ].join('\n');
 
+nsh.copyStyle(style, '.');
+fs.writeFileSync(htmlFile, html);
 
-
+console.log('Opening highlighted page. Using style', style);
+exec('open ' + htmlFile);
