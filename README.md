@@ -1,5 +1,6 @@
-# Victory Boogie Woogie
-This little script is made for the 'Elegant Algorithms' contest by
+# Mondriaan's Victory Boogie Woogie
+This little script is made for the ['Elegant
+Algorithms'](http://www.elegant.setup.nl/) contest by
 Setup.nl. The goal is to make a beautiful piece of code which generates
 a loosly interpreted version of Mondriaan's Victory Boogie Woogie.
 
@@ -11,7 +12,8 @@ way. This was the seed to make a script.
 The script recompiles itself into the rectangular Mondriaan shape and launches 
 itself into an syntax highlighted html version with the Mondriaan color
 palette ofcourse! The result is a generated Victory Boogie Woogie based on it's
-own source.
+own source. Click
+[here](http://jellea.github.com/mondriaanify/victory-boogie-woogie.html) for the result
 
 # How to run
 1. Install node.js and node-syntaxhighlighter
